@@ -113,11 +113,79 @@ fun main(){
 //        println("Character: ${<str>[i]}")
 //    }
     // reverse a string using for loop
-    val str = "Hello"
-    val reversed = buildString {
-        for (j in str.lastIndex downTo 0) {
-            append(str[j])
+//    val str = "Hello"
+//    val reversed = buildString {
+//        for (j in str.lastIndex downTo 0) {
+//            append(str[j])
+//        }
+//    }
+//    println(reversed)
+
+    // functions
+    // fun <name>(<parameters>): <return type> { <body> }
+    fun add(a: Int = 10, b: Int): Int {
+        return a + b
+    }
+
+    // extension function - add new function to existing class without modifying it
+    fun String.reversed(): String {
+        val rev = buildString {
+            for (j in this@reversed.lastIndex downTo 0) {
+                append(this@reversed[j])
+            }
+        }
+        return rev
+    }
+    val str = "Kotlin"
+    println(str.reversed())
+
+    // function overloading - same function name but different parameters
+    fun Int.reversed(): Int {
+        return this.toString().reversed().toInt()
+    }
+    val testNum = 12345
+    println(testNum.reversed())
+
+    // lambda expressions - anonymous functions that can be treated as values
+    // filter a list using lambda
+    val numbers = listOf(1, 2, 3, 4, 5)
+    val evenNumbers = numbers.filter { it % 2 == 0 }
+
+    // lambda func if written clearly
+//    val lambda: (Char) -> Boolean = {
+//        it.isLetter() || it.isDigit()
+//    }
+//    val lettersOnly = <str>.filter(lambda)
+
+    // write a func that accept lambda as parameter
+    fun String.myFilter(predicate: (Char) -> Boolean): String {
+        return buildString {
+            for (ch in this@myFilter) {
+                if (predicate(ch)) {
+                    append(ch)
+                }
+            }
         }
     }
-    println(reversed)
+    // change lambda to be an extension function
+    fun String.MyFilter(predicate: Char.() -> Boolean): String {
+        return buildString {
+            for (ch in this@MyFilter) {
+                if (ch.predicate()) {
+                    append(ch)
+                }
+            }
+        }
+    }
+
+    // it is the implicit single-parameter name the Kotlin compiler provides for a lambda
+    // when you don't declare parameters explicitly. It's just a read-only local parameter
+    // (no special runtime magic). If the lambda has >= 0 parameter, or you
+    // need destructuring, you must declare parameters explicitly. For lambdas with a receiver
+    // use this (receiver) instead of it.
+
+    // this@<label> is used to refer to the receiver of the lambda when there are multiple receivers
+    // in scope. It allows you to specify which receiver you want to access when there is ambiguity.
 }
+
+// class
