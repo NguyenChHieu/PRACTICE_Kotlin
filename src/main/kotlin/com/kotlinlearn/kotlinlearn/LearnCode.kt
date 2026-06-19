@@ -191,9 +191,95 @@ fun main(){
 }
 
 // class
-// data class - automatically generates equals(), hashCode(), toString(), copy() based on props defined in the primary const
+// data class - automatically generates equals(), hashCode(), toString(), copy() based on props defined in primary const
 // x = y.copy(prop1 = newValue) would create a new instance with prop1 changed but other props remain the same
-class Rectangle(val width: Double, val height: Double) {
+// vararg - allows you to pass a variable number of arguments to a function. Inside the function, the vararg parameter
+// is treated as an array of the specified type. You can use the spread operator (*) to pass an array as vararg
+// arguments when calling the function.
+data class Rectangle(val width: Double, val height: Double) {
     val diagonal: Double = sqrt(width * width + height * height)
     val area: Double = width * height
 }
+
+data class Circle(val radius: Double) {
+    val area: Double = Math.PI * radius * radius
+    val diameter: Double = 2 * Math.PI * radius
+}
+
+// interface
+interface Shape {
+    val area: Double
+    val perimeter: Double
+}
+
+fun sumAreas(vararg shapes: Shape): Double {
+    return shapes.sumOf { currentShape ->
+        currentShape.area
+    }
+}
+
+// implement interface by  <class> : <interface> { <implementations> }
+// override func to provide specific implementation for the interface methods
+class Square(val side: Double) : Shape {
+    override val area: Double
+        get() = side * side
+    override val perimeter: Double
+        get() = 4 * side
+}
+
+// abstract class - cannot be instantiated, can contain abstract methods that must be implemented by subclasses
+abstract class Shape2 {
+    abstract val area: Double
+    abstract val perimeter: Double
+}
+
+// open class - can be inherited by other classes. By default, classes in Kotlin are final (cannot be inherited)
+// open val/func: can be overridden by subclasses, but not required. If you want to require subclasses to override, use abstract instead of open.
+
+// polymorphism
+//fun printShapes(vararg shapes: Shape) {
+//    for (shape in shapes) {
+//        when (shape) {
+//            is Square -> println("Square with area ${shape.area} and perimeter ${shape.perimeter}")
+//            is Rectangle -> println("Rectangle with area ${shape.area} and diagonal ${shape.diagonal}")
+//            is Circle -> println("Circle with area ${shape.area} and diameter ${shape.diameter}")
+//             else -> println("Unknown shape")
+//        }
+//    }
+//}
+
+// sealed interface/class - restricts class hierarchy to a limited set of types. All subclasses must be defined in the
+// same file. Useful for representing closed sets of types and enabling exhaustive when expressions without needing an else case.
+
+// enum
+enum class Country(val code: String) {
+    USA("US"),
+    CANADA("CA"),
+    MEXICO("MX")
+}
+
+fun getCountryInfo(country: Country): String {
+    return when (country) {
+        Country.USA -> "United States of America"
+        Country.CANADA -> "Canada"
+        Country.MEXICO -> "Mexico"
+    }
+}
+
+// singleton object - a class that has only one instance. Useful for utility classes or managing shared state. The
+// object declaration creates a thread-safe singleton instance that can be accessed directly by its name without needing
+// to instantiate it.
+object MathUtils {
+    fun square(x: Double): Double {
+        return x * x
+    }
+    fun cube(x: Double): Double {
+        return x * x * x
+    }
+}
+
+// visibility modifiers
+// public (default) - visible everywhere
+// private - visible only within the class/file
+// protected - visible within the class and its subclasses
+// internal - visible within the same module (e.g., same Gradle project)
