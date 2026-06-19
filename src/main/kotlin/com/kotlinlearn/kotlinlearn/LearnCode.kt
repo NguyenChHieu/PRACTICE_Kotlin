@@ -1,3 +1,5 @@
+import kotlin.math.sqrt
+
 fun main(){
 //    println("Hello World")
     val x = 5
@@ -39,7 +41,7 @@ fun main(){
 
     // can be treated as expression that returns value
     val result = if (num % 2 == 0) "Even" else "Odd"
-    println("The number is $result")
+//    println("The number is $result")
 
     // when expression (similar to switch-case). it would be <bool condition> -> <result>/action
     when {
@@ -64,7 +66,7 @@ fun main(){
     // we can throw exceptions too
     try {
         val result = 10 / num
-        println("Result: $result")
+//        println("Result: $result")
     } catch (e: ArithmeticException) {
         println("Cannot divide by zero")
     }
@@ -136,15 +138,15 @@ fun main(){
         }
         return rev
     }
-    val str = "Kotlin"
-    println(str.reversed())
+//    val str = "Kotlin"
+//    println(str.reversed())
 
     // function overloading - same function name but different parameters
     fun Int.reversed(): Int {
         return this.toString().reversed().toInt()
     }
-    val testNum = 12345
-    println(testNum.reversed())
+//    val testNum = 12345
+//    println(testNum.reversed())
 
     // lambda expressions - anonymous functions that can be treated as values
     // filter a list using lambda
@@ -189,3 +191,9 @@ fun main(){
 }
 
 // class
+// data class - automatically generates equals(), hashCode(), toString(), copy() based on props defined in the primary const
+// x = y.copy(prop1 = newValue) would create a new instance with prop1 changed but other props remain the same
+class Rectangle(val width: Double, val height: Double) {
+    val diagonal: Double = sqrt(width * width + height * height)
+    val area: Double = width * height
+}
