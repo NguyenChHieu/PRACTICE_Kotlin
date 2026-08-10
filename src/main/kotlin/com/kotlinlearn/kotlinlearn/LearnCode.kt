@@ -1,4 +1,9 @@
+package com.kotlinlearn.kotlinlearn
+
 import kotlin.math.sqrt
+import arrow.core.Either
+import arrow.core.raise.either
+import arrow.core.raise.ensure
 
 fun main(){
 //    println("Hello World")
@@ -248,9 +253,9 @@ abstract class Shape2 {
 //    }
 //}
 
-// sealed interface/class - restricts class hierarchy to a limited set of types. All subclasses must be defined in the
 // same file. Useful for representing closed sets of types and enabling exhaustive when expressions without needing an else case.
 
+// sealed interface/class - restricts class hierarchy to a limited set of types. All subclasses must be defined in the
 // enum
 enum class Country(val code: String) {
     USA("US"),
@@ -283,3 +288,168 @@ object MathUtils {
 // private - visible only within the class/file
 // protected - visible within the class and its subclasses
 // internal - visible within the same module (e.g., same Gradle project)
+
+sealed interface LoginFailure {
+    data object EmptyEmail : LoginFailure
+    data object InvalidEmail : LoginFailure
+    data object WeakPassword : LoginFailure
+}
+
+data class User(val email: String)
+
+fun login(email: String, password: String): Either<LoginFailure, User> = either {
+    ensure(email.isNotBlank()) {
+        LoginFailure.EmptyEmail
+    }
+
+    ensure(email.contains("@")) {
+        LoginFailure.InvalidEmail
+    }
+
+    ensure(password.length >= 8) {
+        LoginFailure.WeakPassword
+    }
+
+    User(email)
+}
+
+sealed interface UserIdFailure {
+    data object EmptyInput : UserIdFailure
+    data object NotANumber : UserIdFailure
+    data object NegativeId : UserIdFailure
+}
+
+fun parseUserId(input: String): Either<UserIdFailure, Int> = either {
+    ensure(input.isNotBlank()) {
+        UserIdFailure.EmptyInput
+    }
+
+    val id = input.toIntOrNull() ?: raise(UserIdFailure.NotANumber)
+
+    ensure(id > 0) {
+        UserIdFailure.NegativeId
+    }
+
+    id
+}
+
+sealed interface AgeFailure {
+    data object NegativeAge: AgeFailure
+    data object UnderAge: AgeFailure
+}
+
+fun checkAge(age: Int): Either<AgeFailure, Int> = either {
+    ensure(age >= 0) {
+        AgeFailure.NegativeAge
+    }
+
+    ensure(age >= 18) {
+        AgeFailure.UnderAge
+    }
+
+    age
+}
+
+
+//fun reverse(input: String): String {
+//    var string = ""
+//    for (i in input.lastIndex downTo 0){
+//        string += input[i]
+//    }
+//    return string
+//}
+//
+//fun isAllUppercase(word: String): Boolean{
+//    return word.any { it.isLetter() } &&
+//            word.all { !it.isLetter() || it.isUpperCase() }
+//}
+//
+//object Bob {
+//
+//    fun hey(input: String): String {
+//        if (input[input.lastIndex] == '.' && isAllUppercase(input)) return "Calm down, I know what I'm doing!"
+//        else if (input[input.lastIndex] == '.') return "Sure."
+//        else if (isAllUppercase(input)) return "Whoa, chill out!"
+//        else if (input.isBlank()) return "Fine. Be that way!"
+//        return "Whatever."
+//    }
+//}
+
+//class Solution {
+//    fun validSequence(word1: String, word2: String): IntArray {
+//        val m = word2.length
+//        val n = word1.length
+//        val last = IntArray(m) { -1 }
+//        var j = m - 1
+//
+//        // last[j] = a matching position for word2[j]
+//        // as far to the right as possible
+//        for (i in n - 1 downTo 0) {
+//            if (j >= 0 && word1[i] == word2[j]) {
+//                last[j] = i
+//                j--
+//            }
+//        }
+//
+//        val res = mutableListOf<Int>()
+//        var canSkip = true
+//        j = 0
+//
+//        for (i in 0 until n) {
+//            if (j == m) break
+//
+//            val exactMatch = word1[i] == word2[j]
+//            val canUseMismatch = canSkip && (j == m - 1 || i < last[j + 1])
+//            if (exactMatch || canUseMismatch) {
+//                if (!exactMatch) canSkip = false
+//                res.add(i)
+//                j++
+//            }
+//        }
+//
+//        return if (j == m) res.toIntArray() else intArrayOf()
+//    }
+//}
+
+//class Solution {
+//    fun stoneGameII(piles: IntArray): Int {
+//        /*
+//        M = 2, 4,..., 2M
+//        dp(i) = max diff that alice can create against bob
+//        dp(i) = max(take x piles (1/2.../2M) - dp(i + x))
+//        */
+//
+//        val n = piles.size
+//        val memo = mutableMapOf<String, Int>()
+//
+//        fun dp(i: Int, m: Int): Int {
+//            if (i >= n) return 0
+//            val key = "$i,$m"
+//            if (memo.containsKey(key)) return memo[key]!!
+//
+//            var take = Int.MIN_VALUE
+//            var totalStones = 0
+//            for (x in 1..2*m){
+//                if (i + x > n) break
+//                totalStones += piles[i + x - 1]
+//                take = maxOf(
+//                    take,
+//                    totalStones - dp(i + x, maxOf(x,m))
+//                )
+//            }
+//
+//            memo[key] = take
+//            return memo[key]!!
+//        }
+//
+//        val diff = dp(0, 1)
+//        val total = piles.sum()
+//        return (total + diff) / 2
+//    }
+//}
+
+class Solution {
+    fun winnerSquareGame(n: Int): Boolean {
+
+    }
+}
