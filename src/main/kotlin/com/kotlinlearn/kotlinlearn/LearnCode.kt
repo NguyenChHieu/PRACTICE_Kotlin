@@ -4,6 +4,8 @@ import kotlin.math.sqrt
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensure
+import kotlin.math.log2
+import kotlin.math.pow
 
 fun main(){
 //    println("Hello World")
@@ -450,6 +452,31 @@ fun checkAge(age: Int): Either<AgeFailure, Int> = either {
 
 class Solution {
     fun winnerSquareGame(n: Int): Boolean {
+        val squares = mutableListOf<Int>()
+        val max = sqrt(n.toDouble()).toInt()
+        for (i in 1..max){
+            squares.add(i * i)
+        }
 
+        /*
+        dp(x) whether player can win if there are x stones left
+        dp(x) = True if any(dp(x - i) in 1 to <idx of largest perfect square in squares> is False)
+        dp(x) == 1 return True, == 0 return False
+         */
+
+        val memo = mutableMapOf<Int, Boolean>()
+        memo[0] = false; memo[1] = true;
+        fun dp(i: Int): Boolean {
+            if (memo.containsKey(i)) return memo[i]!!
+            for (sq in squares){
+                if (sq > i) break
+                if (!dp(i-sq)) {
+                    memo[i] = true
+                    return true
+                }
+            }
+            return false
+        }
+        return dp(n)
     }
 }
